@@ -16,6 +16,12 @@ A diferencia de esto, Docker nos ofrece beneficios tales como:
 - Cada contenedor contiene todo lo que se necesita para ejecutarse
 - Es indiferente al SO host
 
+Los volúmenes son usados para hacer persistente la data entre reinicios y levantamiento de imágenes. Existen 3 tipos:
+
+1. **Named**: le asignamos un nombre personalizado
+2. **Bind**: permite usar path absolutos
+3. **Anonymous**: Docker le asignará un nombre
+
 ## Diccionario
 
 - **Docker**: es una herramienta diseñada para facilitar la creación, implementación y ejecución de aplicaciones mediante el uso de contenedores.
@@ -37,11 +43,13 @@ A diferencia de esto, Docker nos ofrece beneficios tales como:
 
 - `docker pull {imagen}:{tag}`: descargar una imagen, si no se especifica una versión descargará la tag _latest_
 
-- `docker container ls -a`: listar todos los contenedores (también se puede usar docker ps -a)
+- `docker container`: mostrar comandos de los contenedores
 
+  - ls: listar
+    - -a: listar todos los activos e inactivos (también se podría usar `docker ps -a`)
   - run {imagen}:{tag}: correrá un contenedor (con nombre aleatorio) basado en una imagen
-  - stop {id | nombre}: detener contenedor
-  - start {id | nombre}: ejecutar contenedor
+  - stop {ids | nombres}: detener contenedores
+  - start {ids | nombres}: ejecutar contenedores
   - rm {ids | nombres}: eliminar uno o varios contenedores
     - -f: para eliminar de manera forzada (aunque este corriendo)
   - prune: eliminar todos los contenedores detenidos
@@ -51,12 +59,50 @@ A diferencia de esto, Docker nos ofrece beneficios tales como:
   - -e {VARIABLE}={valor}: especificar una variable de entorno
   - logs {id | nombre}: mostrar los logs
     - -f | --follow: queda pendiente de los nuevos logs que se emitan
+  - -v {volumen_host}:{volumen_contenedor} | --volume {volumen_host}:{volumen_contenedor}: especificar un volumen
+    - ${pwd}: hace referencia al directorio actual en donde nos encontramos (Windows)
+  - --network {nombre}: agregar el contenedor a una red
+  - -w {nombre} | --workdir {nombre}: establecer el directorio de trabajo dentro del contenedor
 
-  **Levantar contenedores de ejemplo**
+- `docker image`: mostrar comandos de las imágenes
 
-  - postgres: `docker container run --name postgres-local -dp 5432:5432 -e POSTGRES_PASSWORD=password postgres`
-
-- `docker image ls`: listar las imágenes descargadas (también se puede usar docker images)
-
+  - ls: listar las imágenes descargadas (también se podría usar `docker images`)
   - rm {ids | nombres}: eliminar imagen o imágenes
     - -f: eliminar de manera forzada (aunque este referenciada por un contenedor)
+
+- `docker volume`: mostrar comandos de los volúmenes
+
+  - ls: listar
+  - create {nombre}: crear un espacio en nuestro host para hacer la data persistente
+  - inspect {nombre}: mostrar detalles de un volumen
+  - prune: eliminar todos los que no están siendo utilizados
+
+- `docker network`: mostrar comandos de las redes
+
+  - ls: listar
+  - create {nombre}: crear
+  - connect {id | nombre} {contenedor}: unir contenedores en una red
+  - inspect {id | nombre}: inspeccionar
+  - prune: eliminar todas las que no están siendo utilizadas
+
+- `docker exec -it {id | nombre} {ejecutable}`: permite ejecutar un comando shell dentro del contenedor
+
+- `docker stats`: mostrar el consumo de recursos de Docker en la Terminal
+
+### Ejemplos de como correr contenedores
+
+_POSTGRES_
+
+`docker container run --name postgres-local -dp 5432:5432 -e POSTGRES_PASSWORD=password postgres`
+
+_MARIADB_
+
+`docker container run --name mariadb-local -dp 3306:3306 -e MARIADB_USER=example-user -e MARIADB_PASSWORD=user-password -e MARIADB_ROOT_PASSWORD=root-secret-password -e MARIADB_DATABASE=world-db -v world-db:/var/lib/mysql --network world-app mariadb:jammy`
+
+_PHPMYADMIN_
+
+`docker run --name phpmyadmin -dp 8080:80 -e PMA_ARBITRARY=1 --network world-app phpmyadmin:5.2.0-apache`
+
+_NODE_
+
+`docker container run --name nest-app -w /app -p 80:3000 -v ${pwd}:/app node:18.17.0-alpine3.18 sh -c "yarn install && yarn start:dev"`
