@@ -93,16 +93,42 @@ Los volúmenes son usados para hacer persistente la data entre reinicios y levan
 
 _POSTGRES_
 
-`docker container run --name postgres-local -dp 5432:5432 -e POSTGRES_PASSWORD=password postgres`
+```
+docker container run --name postgres-local -dp 5432:5432 -e POSTGRES_PASSWORD=password postgres
+```
 
-_MARIADB_
+_MARIADB_ y _PHPMYADMIN_ dentro de la misma red llama world-app
 
-`docker container run --name mariadb-local -dp 3306:3306 -e MARIADB_USER=example-user -e MARIADB_PASSWORD=user-password -e MARIADB_ROOT_PASSWORD=root-secret-password -e MARIADB_DATABASE=world-db -v world-db:/var/lib/mysql --network world-app mariadb:jammy`
+```
+docker container run --name mariadb-local -dp 3306:3306 -e MARIADB_USER=example-user -e MARIADB_PASSWORD=user-password -e MARIADB_ROOT_PASSWORD=root-secret-password -e MARIADB_DATABASE=world-db -v world-db:/var/lib/mysql --network world-app mariadb:jammy
+```
 
-_PHPMYADMIN_
+```
+docker container run --name phpmyadmin -dp 8080:80 -e PMA_ARBITRARY=1 --network world-app phpmyadmin:5.2.0-apache
+```
 
-`docker run --name phpmyadmin -dp 8080:80 -e PMA_ARBITRARY=1 --network world-app phpmyadmin:5.2.0-apache`
+_APP NODE_
 
-_NODE_
+```
+docker container run --name nest-app -w /app -p 80:3000 -v ${pwd}:/app node:18.17.0-alpine3.18 sh -c "yarn install && yarn start:dev"
+```
 
-`docker container run --name nest-app -w /app -p 80:3000 -v ${pwd}:/app node:18.17.0-alpine3.18 sh -c "yarn install && yarn start:dev"`
+_MSSQL_
+
+```
+docker container run --name mssql-demo -e ACCEPT_EULA=Y -e MSSQL_SA_PASSWORD=Password1 -dp 1433:1433 mcr.microsoft.com/mssql/server:2022-latest
+```
+
+## Docker Compose
+
+Es una herramienta que nos ayuda a definir y compartir aplicaciones de varios contenedores.
+
+Los contenedores creados mediante el compose tendrán esta nomenclatura: `{nombre_directorio}_{nombre_servicio}_{número_replica}`
+
+- `docker compose`: muestra la ayuda
+
+  - up: ejecutar un docker-compose estando en el mismo directorio
+    - -d: modo detached
+  - down: remover la instancia del compose ejecutado
+  - logs: mostrar los logs del compose
+    - -f: queda pendiente de los nuevos logs

@@ -1,0 +1,34 @@
+# se le indica a Docker cuales serán los comandos que podrá usar basado en esa versión
+version: '3'
+
+# definición de los servicios
+services:
+  # servicio 1
+  db:
+    image: postgres:15.1
+    container_name: postgres-database
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=123456
+
+  # servicio 2
+  pdAdmin:
+    # se indica que se depende del servicio 1 llamado db
+    depends_on:
+      - db
+    image: dpage/pgadmin4:6.17
+    ports:
+      - 8080:80
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    environment:
+      - PGADMIN_DEFAULT_PASSWORD=123456
+      - PGADMIN_DEFAULT_EMAIL=test@test.com
+
+volumes:
+  # creacion del volumen para los servicios indicados
+  postgres-db:
+    # tomará el volumen ya creado con el mismo nombre postgres-db cuando se específica el external
+    # de lo contrario lo creará automáticamente
+    external: true
