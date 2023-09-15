@@ -1,7 +1,5 @@
 # Apuntes de Docker
 
-Guía de atajos: [https://github.com/Klerith/mas-talento/blob/main/docker/docker-cheat-sheet.pdf](https://github.com/Klerith/mas-talento/blob/main/docker/docker-cheat-sheet.pdf)
-
 Máquinas Virtuales:
 
 - **Pesadas**: emulamos la capa de apps y el kernel del SO
@@ -41,7 +39,13 @@ Los volúmenes son usados para hacer persistente la data entre reinicios y levan
 
 - `docker {comando} --help`: mostrar la ayuda de un comando
 
-- `docker pull {imagen}:{tag}`: descargar una imagen, si no se especifica una versión descargará la tag _latest_
+- `docker pull {imagen}:{tag}`: descargar una imágen, si no se especifica una versión descargará con el tag _latest_
+
+- `docker push {nombre}:{tag}`: subir una imágen a Docker Hub
+
+- `docker login`: iniciar sesión en Docker Hub
+
+- `docker logout`: cerrar sesión
 
 - `docker container`: mostrar comandos de los contenedores
 
@@ -69,6 +73,9 @@ Los volúmenes son usados para hacer persistente la data entre reinicios y levan
   - ls: listar las imágenes descargadas (también se podría usar `docker images`)
   - rm {ids | nombres}: eliminar imagen o imágenes
     - -f: eliminar de manera forzada (aunque este referenciada por un contenedor)
+  - tag {nombre}:{tag} {nombre}:{nuevo_tag}: permite cambiar el tag
+  - prune: eliminar todas las que no están siendo usadas
+    - -a: eliminar todo con o sin uso
 
 - `docker volume`: mostrar comandos de los volúmenes
 
@@ -125,10 +132,28 @@ Es una herramienta que nos ayuda a definir y compartir aplicaciones de varios co
 
 Los contenedores creados mediante el compose tendrán esta nomenclatura: `{nombre_directorio}_{nombre_servicio}_{número_replica}`
 
-- `docker compose`: muestra la ayuda
+- `docker compose`: mostrar comandos de la herramienta compose
 
-  - up: ejecutar un docker-compose estando en el mismo directorio
+  - up: ejecutar un docker-compose.yml estando en el mismo directorio
     - -d: modo detached
   - down: remover la instancia del compose ejecutado
   - logs: mostrar los logs del compose
     - -f: queda pendiente de los nuevos logs
+
+## Dockerfile
+
+Instrucciones de como construir capas, o sea, como se construye la imágen que ejecutará el código.
+
+- `docker buildx`: mostrar comandos para compilaciones o constructores de imagenes (builders)
+
+  - ls: listar los builders existentes (el que está marcado con \* es el que está seleccionado)
+  - build: inicia la construcción de una imágen a partir de un archivo Dockerfile (también se podría usar `docker build`)
+    - -t {nombre}:{tag} | --tag {nombre}:{tag}: especificar un nombre (por defecto lo creará con el tag :latest)
+    - {path}: especificar la ruta del Dockerfile (el . indicará que el archivo se encuentra en el directorio actual)
+    - --no-cache: reconstruir toda la imágen evitando la cache
+    - --push: subir al repositorio remoto las compilaciones generadas
+    - --platform: especificar las plataformas para la construcción (linux/amd64, linux/arm64, etc.)
+  - create: crear un nuevo sistema para compilaciones
+    - --name {nombre}: asignarle nombre
+  - use {nombre}: seleccionar un builder
+  - inspect: muestra todas las plataformas de las cuales el builder puede trabajar
