@@ -137,8 +137,11 @@ Los contenedores creados mediante el compose tendrán esta nomenclatura: `{nombr
   - up: ejecutar un docker-compose.yml estando en el mismo directorio
     - -d: modo detached
   - down: remover la instancia del compose ejecutado
+    - --volumes: incluye los volúmenes en la eliminación
   - logs: mostrar los logs del compose
     - -f: queda pendiente de los nuevos logs
+  - build: construye el compose en base a un Dockerfile
+  - -f {nombre} {comando} {servicio}: especificiar un compose con nombre específico y luego indiciarle algún comando como up, build, etc., y opcionalmente indicando un servicio
 
 ## Dockerfile
 
@@ -156,4 +159,5 @@ Instrucciones de como construir capas, o sea, como se construye la imágen que e
   - create: crear un nuevo sistema para compilaciones
     - --name {nombre}: asignarle nombre
   - use {nombre}: seleccionar un builder
-  - inspect: muestra todas las plataformas de las cuales el builder puede trabajar
+  - inspect: muestra todas las plataformas de las cuales el builder seleccionado puede trabajar
+  - imagetools inspect {nombre}:{tag}: muestra las arquitecturas (plataformas) compatibles de una imágen
