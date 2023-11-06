@@ -45,7 +45,11 @@ Los volúmenes son usados para hacer persistente la data entre reinicios y levan
 
 - `docker login`: iniciar sesión en Docker Hub
 
+  - {sesión}: se puede iniciar una sesión específica mediante su nombre
+
 - `docker logout`: cerrar sesión
+
+  - {sesión}: se puede cerrar una sesión específica mediante su nombre
 
 - `docker container`: mostrar comandos de los contenedores
 
@@ -95,6 +99,8 @@ Los volúmenes son usados para hacer persistente la data entre reinicios y levan
 - `docker exec -it {id | nombre} {ejecutable}`: permite ejecutar un comando shell dentro del contenedor
 
 - `docker stats`: mostrar el consumo de recursos de Docker en la Terminal
+
+- `docker cp {archivo} {contenedor}:{path}`: copiar un archivo dentro de un contenedor con ruta específica
 
 ### Ejemplos de como correr contenedores
 
