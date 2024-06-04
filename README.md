@@ -102,6 +102,8 @@ Los volúmenes son usados para hacer persistente la data entre reinicios y levan
 
 - `docker cp {archivo} {contenedor}:{path}`: copiar un archivo dentro de un contenedor con ruta específica
 
+  - {contenedor}:{path} {path_local}: copiar archivo desde contendor a una ruta local del equipo, por ejemplo: docker cp fer:/backup.sql ./backup.sql
+
 ### Ejemplos de como correr contenedores
 
 _POSTGRES_
